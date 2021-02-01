@@ -43,6 +43,11 @@ import numpy as np
 import skimage.io
 from imgaug import augmenters as iaa
 
+#ignore warnings 
+import warnings
+
+warnings.filterwarnings("ignore")
+
 # Root directory of the project
 ROOT_DIR = os.path.abspath("../../")
 
@@ -105,14 +110,17 @@ class NucleusConfig(Config):
     NAME = "nucleus"
 
     # Adjust depending on your GPU memory (Default is 6)
-    IMAGES_PER_GPU = 12
+    IMAGES_PER_GPU = 4
+
+    GPU_COUNT = 1
+
 
     # Number of classes (including background)
     NUM_CLASSES = 1 + 1  # Background + nucleus
 
     # Number of training and validation steps per epoch
-    STEPS_PER_EPOCH = (657 - len(VAL_IMAGE_IDS)) // IMAGES_PER_GPU
-    VALIDATION_STEPS = max(1, len(VAL_IMAGE_IDS) // IMAGES_PER_GPU)
+    STEPS_PER_EPOCH = (657 - len(VAL_IMAGE_IDS)) // (IMAGES_PER_GPU * GPU_COUNT)
+    VALIDATION_STEPS = max(1, len(VAL_IMAGE_IDS) // (GPU_COUNT* IMAGES_PER_GPU))
 
     # Don't exclude based on confidence. Since we have two classes
     # then 0.5 is the minimum anyway as it picks between nucleus and BG
